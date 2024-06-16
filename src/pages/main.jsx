@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 
 import Box from '@mui/material/Box'
 import { Button } from '@mui/material'
-import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 import { Typography } from '@mui/material'
 
 import CreateBasic from '../components/CreateBasic'
+import EditVideo from '../components/EditVideo'
+import FileList from '../components/FileList'
 import Footer from '../components/Footer'
+import TranslationResult from '../components/TranslationResult'
 
 import { useActions } from '../store/uiActions'
 import { useBasicSettings, useItem, useTask } from '../store/settings'
@@ -16,13 +20,19 @@ import '../assets/css/main.css'
 import aipng from '../assets/img/ai.png'
 
 export default function App() {
-  const { showTaskPopup, showVideoPopup } = useActions((store) => store)
+  const { showTaskPopup, showVideoPopup, showResult } = useActions((store) => store)
 
   const reSetAll = () => {
-    useActions.setState({ showTaskPopup: false, showVideoPopup: false })
-    useBasicSettings.setState({ fromLanguage: 'zh-CN', toLanguage: 'en-US', style:'' })
+    useActions.setState({ showTaskPopup: false, showVideoPopup: false, showResult: false })
+    useBasicSettings.setState({ fromLanguage: 'zh-CN', toLanguage: 'en-US', style: '' })
     useItem.setState({ currentItem: null })
-    useTask.setState({ videos: [], index: 0 })
+    useTask.setState({
+      videos: [
+        { name: 'demo1.mp4', url: 'https://www.w3schools.com/html/mov_bbb.mp4', size: '5m' },
+        { name: 'demo2.mp4', url: 'https://www.w3schools.com/html/mov_bbb.mp4', size: '4m' },
+        { name: 'demo3.mp4', url: 'https://www.w3schools.com/html/mov_bbb.mp4', size: '5.2m' },
+      ], index: 0, result: []
+    })
   }
 
   const handleTaskOpen = () => {
@@ -31,10 +41,6 @@ export default function App() {
 
   const handleTaskClose = () => {
     useActions.setState({ showTaskPopup: false })
-  }
-
-  const handleVideoOpen = () => {
-    useActions.setState({ showVideoPopup: true })
   }
 
   const handleVideoClose = () => {
@@ -69,12 +75,16 @@ export default function App() {
         </Box>
         <CreateBasic />
         <Dialog onClose={handleTaskClose} open={showTaskPopup}>
-        <DialogTitle>新建转译任务</DialogTitle>
-        <Box sx={{width:'600px',height:'450px',margin:'40px'}}>
-          aaaaaaaa
-        </Box>
-      </Dialog>
-
+          <DialogTitle>新建转译任务</DialogTitle>
+          <FileList />
+        </Dialog>
+        {showResult && (<TranslationResult />)}
+        <Dialog maxWidth='xl' onClose={handleVideoClose} open={showVideoPopup}>
+          <DialogTitle>编辑字幕</DialogTitle>
+          <DialogContent>
+            <EditVideo />
+          </DialogContent>
+        </Dialog>
       </Box>
       <Footer />
     </Box>

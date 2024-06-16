@@ -14,3 +14,4 @@ export function getRandomId() {
     //生成7位随机大小写字母的字符串并返回
     return Math.random().toString(36).substr(2, 7);
 }
+

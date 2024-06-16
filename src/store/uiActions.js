@@ -5,4 +5,5 @@ export const useActions = create((set) => ({
   showTaskPopup: false,
   //translation video
   showVideoPopup: false,
+  showResult: false,
 }));

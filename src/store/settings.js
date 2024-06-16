@@ -45,8 +45,13 @@ export const useBasicSettings = create(
 
 export const useTask = create(
   persist((set) => ({
-    videos: [],
+    videos: [
+      {name:'demo1.mp4',url:'https://www.w3schools.com/html/mov_bbb.mp4',size:'5m'},
+      {name:'demo2.mp4',url:'https://www.w3schools.com/html/mov_bbb.mp4',size:'4m'},
+      {name:'demo3.mp4',url:'https://www.w3schools.com/html/mov_bbb.mp4',size:'5.2m'},
+    ],
     index: 0,
+    result:[],
   }),
     { name: 'task' })
 )
