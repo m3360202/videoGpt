@@ -79,7 +79,7 @@ export default function App() {
           <FileList />
         </Dialog>
         {showResult && (<TranslationResult />)}
-        <Dialog maxWidth='xl' onClose={handleVideoClose} open={showVideoPopup}>
+        <Dialog fullScreen onClose={handleVideoClose} open={showVideoPopup}>
           <DialogTitle>编辑字幕</DialogTitle>
           <DialogContent>
             <EditVideo />

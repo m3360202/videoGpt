@@ -1,115 +1,96 @@
 import React, { useState, useEffect } from 'react'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import { MenuItem, Select, Typography } from '@mui/material'
+import { Button } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import Typography from '@mui/material/Typography';
+import Tab from '@mui/material/Tab';
+import { TabContext, TabList, TabPanel } from '@mui/lab'
 
 import { useActions } from '../store/uiActions'
-import { useBasicSettings, useItem } from '../store/settings'
+import { useItem } from '../store/settings'
+
+import SrtList from './SrtList';
 
 export default function EditVideo() {
-  const { fromLanguage, toLanguage, style } = useBasicSettings((store) => store)
+
   const { currentItem } = useItem((store) => store)
-  const [files, setFiles] = useState(null)
+
+  const [loading, setLoading] = useState(false)
+  const [value, setValue] = useState("1")
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  }
+
+  const handleClose = () => {
+    useActions.setState({ showVideoPopup: false })
+  }
+
+  const saveVideo = () => {
+    //执行保存
+    handleClose()
+  }
+   //测试字幕数组
+  const srtList = [
+    { text: 'aaaaaaaaaaaaaaaaaaa', from: '00:00:00,000', to: '00:00:05,000' },
+    { text: 'b', from: '00:00:05,000', to: '00:00:10,000' },
+  ]
 
   return (
     <Box>
       <Box sx={{
-        width: '100%',
+        width: '90%',
         borderRadius: '10px',
+        margin: '0 auto',
         marginTop: '40px',
         background: 'linear-gradient(139deg,#cbfff1 0%,#d7beff 100%)',
-        height: '290px',
+        height: 'auto',
         padding: '30px',
         display: 'flex',
         justifyContent: 'space-between'
       }}>
         <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#fff', padding: '40px', width: '50%', borderRadius: '10px' }}>
-          <Typography sx={{ color: '#939393', marginBottom: '10px' }}>原始视频上传</Typography>
-          <Typography sx={{ color: '#939393' }}>视频大小小于 5m,时长2-5分钟最佳</Typography>
-          <Box style={{
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '20px',
-            alignItems: 'center',
-            background: 'rgba(63,201,195,.08)',
-            padding: '20px',
-            width: '70%',
-            borderRadius: '10px',
-            border: '1px dashed #3fc9c3',
-            cursor: 'pointer'
-          }}>
-            <Typography sx={{ color: '#3fc9c3', marginBottom: '10px' }}>点击选择视频文件</Typography>
-            <Typography sx={{ color: '#3fc9c3' }}>支持mp4 mov格式</Typography>
-            <input
-              type="file"
-              name="file"
-              accept=".mp4,.mov"
-              multiple
-              style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
-                opacity: '0',
-                cursor: 'pointer',
-                zIndex: '10',
-              }}
-            />
-          </Box>
+          <TabContext value={value || ''}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={handleChange}>
+                <Tab label="对白字幕" value="1" />
+                <Tab label="场景字幕" value="2" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <SrtList srtList={srtList} />
+            </TabPanel>
+            <TabPanel value="2">
+              <SrtList srtList={srtList} />
+            </TabPanel>
+          </TabContext>
         </Box>
 
-        <Box style={{textAlign:'left', marginLeft: '20px', display: 'flex', flexDirection: 'column', alignItems: 'left', background: 'rgba(255,255,255,0.6)', padding: '40px', width: '35%', borderRadius: '10px' }}>
-          <Typography sx={{ marginBottom: '10px' }}>转译风格</Typography>
-          <TextField onChange={(e)=>{ useBasicSettings.setState({ style: e.target.value }) }} value={style} sx={{background:'#fff', color:'#999'}} />
+        <Box style={{ textAlign: 'left', marginLeft: '20px', display: 'flex', flexDirection: 'column', alignItems: 'left', background: 'rgba(255,255,255)', padding: '40px', width: '35%', borderRadius: '10px' }}>
+          <Typography sx={{ marginBottom: '10px' }}>效果预览</Typography>
           <Box style={{
-            marginTop:'10px',
+            marginTop: '10px',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center'
           }}
           >
-            <Typography sx={{ marginBottom: '10px', marginRight: '15px' }}>原片语言</Typography>
-            <Select sx={{background:'#fff', color:'#999'}} value={fromLanguage} onChange={(e) => { useBasicSettings.setState({ fromLanguage: e.target.value }) }}>
-              <MenuItem value='zh-CN'>中文 zh-CN</MenuItem>
-              <MenuItem value='en-US'>美式英语 en-US</MenuItem>
-              <MenuItem value='en-GB'>英式英语 en-GB</MenuItem>
-              <MenuItem value='fr-FR'>法语 fr-FR</MenuItem>
-              <MenuItem value='es-ES'>西班牙语 es-ES</MenuItem>
-              <MenuItem value='de-DE'>德语 de-DE</MenuItem>
-              <MenuItem value='it-IT'>意大利语 it-IT</MenuItem>
-              <MenuItem value='ja-JP'>日语 ja-JP</MenuItem>
-              <MenuItem value='ko-KR'>韩语 ko-KR</MenuItem>
-              <MenuItem value='ru-RU'>俄语 ru-RU</MenuItem>
-            </Select>
-          </Box>
-
-          <Box style={{
-            marginTop:'10px',
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center'
-          }}
-          >
-            <Typography sx={{ marginBottom: '10px', marginRight: '15px' }}>目标语言</Typography>
-            <Select sx={{background:'#fff', color:'#999'}} value={toLanguage} onChange={(e) => { useBasicSettings.setState({ toLanguage: e.target.value }) }}>
-              <MenuItem value='en-US'>美式英语 en-US</MenuItem>
-              <MenuItem value='en-GB'>英式英语 en-GB</MenuItem>
-              <MenuItem value='fr-FR'>法语 fr-FR</MenuItem>
-              <MenuItem value='es-ES'>西班牙语 es-ES</MenuItem>
-              <MenuItem value='de-DE'>德语 de-DE</MenuItem>
-              <MenuItem value='it-IT'>意大利语 it-IT</MenuItem>
-              <MenuItem value='ja-JP'>日语 ja-JP</MenuItem>
-              <MenuItem value='ko-KR'>韩语 ko-KR</MenuItem>
-              <MenuItem value='ru-RU'>俄语 ru-RU</MenuItem>
-              <MenuItem value='zh-CN'>中文 zh-CN</MenuItem>
-            </Select>
+            <video
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+              controls
+              poster="preview.jpg"
+            >
+              <source src="a.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </Box>
         </Box>
 
+      </Box>
+      <Box style={{ display: 'flex', alignItems: 'center', width: '20%', margin: '0 auto' }}>
+        <LoadingButton loading={loading} variant="contained" style={{ cursor: 'pointer', margin: '0 auto', marginTop: '30px' }} onClick={saveVideo} >保存视频</LoadingButton>
+        <Button variant="contained" style={{ cursor: 'pointer', margin: '0 auto', marginTop: '30px' }} onClick={handleClose} >关闭窗口</Button>
       </Box>
 
     </Box>
