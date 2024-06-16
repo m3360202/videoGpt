@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { MenuItem, Select, Typography } from '@mui/material'
 
-import { useActions } from '../store/uiActions'
 import { useBasicSettings } from '../store/settings'
 
 export default function CreateBasic() {
   const { fromLanguage, toLanguage, style } = useBasicSettings((store) => store)
-
-  const [files, setFiles] = useState(null)
 
   return (
     <Box>
