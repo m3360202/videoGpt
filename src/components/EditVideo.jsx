@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import Box from '@mui/material/Box'
 import { Button } from '@mui/material'
@@ -15,7 +15,11 @@ import SrtList from './SrtList';
 export default function EditVideo() {
 
   const { currentItem } = useItem((store) => store)
-
+   //测试字幕数组
+  const srtList = [
+    { text: 'aaaaaaaaaaaaaaaaaaa', from: '00:00:00,000', to: '00:00:05,000' },
+    { text: 'b', from: '00:00:05,000', to: '00:00:10,000' },
+  ]
   const [loading, setLoading] = useState(false)
   const [value, setValue] = useState("1")
 
@@ -31,11 +35,6 @@ export default function EditVideo() {
     //执行保存
     handleClose()
   }
-   //测试字幕数组
-  const srtList = [
-    { text: 'aaaaaaaaaaaaaaaaaaa', from: '00:00:00,000', to: '00:00:05,000' },
-    { text: 'b', from: '00:00:05,000', to: '00:00:10,000' },
-  ]
 
   return (
     <Box>

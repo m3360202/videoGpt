@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import { LoadingButton } from '@mui/lab'
-import TextField from '@mui/material/TextField'
-import { MenuItem, Select, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 
 import { useActions } from '../store/uiActions'
 import { useBasicSettings, useTask } from '../store/settings'
 
 import DeleteIcon from '../assets/img/delete.png'
 
-export default function FileList({ status = '' }) {
-  const { fromLanguage, toLanguage, style } = useBasicSettings((store) => store)
-  const { videos, index } = useTask((store) => store)
+export default function FileList() {
+  const { videos } = useTask((store) => store)
   const [loading, setLoading] = useState(false)
 
   const removeVideo = (item) => {
