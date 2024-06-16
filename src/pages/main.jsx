@@ -67,7 +67,7 @@ export default function App() {
           <Box style={{ fontSize: '24px', fontWeight: '600', color: '#000' }}>AI短视频智能二创</Box>
           <Box style={{ fontSize: '14px', fontWeight: '400', color: '#666', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box style={{ fontSize: '14px', fontWeight: '400', color: '#666', margin: '20px 0', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-              <Typography>字幕翻译生成,字幕时间轴自动校验，OCR字幕提纯翻译，纯机器值守</Typography>
+              <Typography>字幕翻译生成,字幕时间轴自动校验,OCR字幕提纯翻译,纯机器值守</Typography>
               <img src={aipng} style={{ width: '16px', height: '16px', marginLeft: '10px' }} />
             </Box>
             <Button variant="contained" style={{ cursor: 'pointer' }} onClick={handleTaskOpen}>新建转译任务</Button>
