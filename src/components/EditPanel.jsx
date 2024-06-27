@@ -18,22 +18,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { convertTimeToSeconds, parseVTT, randomString } from "@/lib/utils";
+import { convertSrtToVtt, convertTimeToSeconds, parseVTT, randomString } from "@/lib/utils";
 import { useTasksStore, useBasicSettings } from "@/store/global";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrashIcon, ClockIcon, HashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export function EditPanel({ file }) {
+export function EditPanel({ task, file }) {
   const videoRef = useRef();
   const { updateTaskVTT } = useTasksStore();
-  const [tab, setTab] = useState('audio');
+  const [tab, setTab] = useState('ocr');
   const [metadataLoaded, setMetadataLoaded] = useState(false);
 
   // useEffect(() => {
   //   updateVideoVTT('start');
   // }, []);
+
+  useEffect(() => {
+    if (file.data.ocr_url && !file.data.ocr_vtt) {
+      fetch(file.data.ocr_url)
+        .then(res => res.text())
+        .then(res => {
+          file.data.ocr_vtt = parseVTT(convertSrtToVtt(res));
+          updateTaskVTT(task.id, file.id, 'ocr_vtt', file.data.ocr_vtt);
+          updateVideoVTT();
+        });
+    }
+  }, []);
 
   useEffect(() => {
     if (tab && metadataLoaded) {
@@ -43,13 +55,13 @@ export function EditPanel({ file }) {
 
   const handleUpdateVTT = (index, value) => {
     file.data[`${tab}_vtt`][index].text = value;
-    updateTaskVTT(file.id, `${tab}_vtt`, file.data[`${tab}_vtt`]);
+    updateTaskVTT(task.id, file.id, `${tab}_vtt`, file.data[`${tab}_vtt`]);
     updateVideoVTT();
   }
 
   const handleDeleteVTT = (index) => {
     file.data[`${tab}_vtt`].splice(index, 1);
-    updateTaskVTT(file.id, `${tab}_vtt`, file.data[`${tab}_vtt`]);
+    updateTaskVTT(task.id, file.id, `${tab}_vtt`, file.data[`${tab}_vtt`]);
     updateVideoVTT();
   }
 
@@ -61,7 +73,7 @@ export function EditPanel({ file }) {
     setMetadataLoaded(true);
   };
 
-  const updateVideoVTT = (tag = '') => {
+  const updateVideoVTT = () => {
     if (!metadataLoaded) return;
     const video = videoRef.current;
 
@@ -76,6 +88,9 @@ export function EditPanel({ file }) {
       const startSeconds = convertTimeToSeconds(cue.time.start);
       const endSeconds = convertTimeToSeconds(cue.time.end);
       const vttCue = new VTTCue(startSeconds, endSeconds, cue.text);
+      // vttCue.line = '-30%';
+      // vttCue.lineAlign = "start";
+      // vttCue.positionAlign = 'middle';
       track.addCue(vttCue);
     });
   }
@@ -83,12 +98,12 @@ export function EditPanel({ file }) {
   return (
     <div className="flex-1 my-6 p-8 w-full rounded-xl bg-gradient-to-r from-cyan-300 to-fuchsia-300 grid grid-cols-2 gap-8 relative">
       <div className="p-6 bg-white rounded-lg flex flex-col items-center flex-1 overflow-y-auto h-[calc(100vh-280px)] ">
-        <Tabs defaultValue="audio" value={tab} onValueChange={handleTabChange} className="w-full flex-1 flex flex-col">
-          <TabsList className="absolute top-12 z-10">
+        <Tabs defaultValue="ocr" value={tab} onValueChange={handleTabChange} className="w-full flex-1 flex flex-col">
+          {/* <TabsList className="absolute top-12 z-10">
             <TabsTrigger value="audio">对白字幕</TabsTrigger>
             <TabsTrigger value="ocr">场景字幕</TabsTrigger>
-          </TabsList>
-          <TabsContent value="audio" className="mt-12 flex-1 direction-vertical border divide-y">
+          </TabsList> */}
+          {/* <TabsContent value="audio" className="mt-12 flex-1 direction-vertical border divide-y">
             {file.data.audio_vtt.map((item, index) => <div className="relative h-20" key={index}>
               <div className="flex h-full items-center">
                 <div className="flex h-full w-7 flex-col items-center justify-between border-r border-gray-200 py-3 text-base text-black/40">
@@ -134,9 +149,9 @@ export function EditPanel({ file }) {
                 </div>
               </div>
             </div>)}
-          </TabsContent>
-          <TabsContent value="ocr" className="mt-12 flex-1 direction-vertical border divide-y">
-            {file.data.ocr_vtt.map((item, index) => <div className="relative h-20" key={index}>
+          </TabsContent> */}
+          <TabsContent value="ocr" className="flex-1 direction-vertical border divide-y">
+            {file.data.ocr_vtt?.map((item, index) => <div className="relative h-20" key={index}>
               <div className="flex h-full items-center">
                 <div className="flex h-full w-7 flex-col items-center justify-between border-r border-gray-200 py-3 text-base text-black/40">
                   <div className="flex w-full cursor-pointer justify-center transition hover:text-black active:scale-90" onClick={() => handleDeleteVTT(index)}>
@@ -187,8 +202,8 @@ export function EditPanel({ file }) {
       <div className="p-6 bg-white rounded-lg space-y-3">
         <div className="size-full flex flex-col">
           <div className="mb-1">效果预览</div>
-          <video ref={videoRef} className="h-[calc(100vh-385px)]" controls onLoadedMetadata={handleMetadataLoad}>
-            <source src="/test.mp4" type="video/mp4" />
+          <video ref={videoRef} className="w-[300px] h-[calc(100vh-385px)]" controls onLoadedMetadata={handleMetadataLoad}>
+            <source src={file.video} type="video/mp4" />
             <track default kind="captions" src={''} srcLang="zh-CN" label="Chinese" />
           </video>
         </div>

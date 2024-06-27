@@ -1,3 +1,4 @@
+import OSS from "ali-oss"
 import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -109,4 +110,34 @@ export function downloadVTT(vttText, filename) {
   document.body.removeChild(a);
 }
 
+export function convertSrtToVtt(srtContent) {
+  // 添加WEBVTT标记
+  let vttContent = 'WEBVTT\n\n' + srtContent;
 
+  // 将时间戳中的","替换为"."
+  vttContent = vttContent.replace(/(\d\d:\d\d:\d\d),(\d\d\d)/g, '\$1.\$2');
+
+  // 返回VTT内容
+  return vttContent;
+}
+
+const OSS_ACCESS_KEY_ID = 'LTAI5tPUSkKTuV7XymsBYj67';
+const OSS_ACCESS_KEY_SECRET = 'X4BF2An7xqo0YhOYXmRlixC2dlq9bG';
+
+const client = new OSS({
+  region: 'oss-cn-hongkong', // 示例：'oss-cn-hangzhou'，填写Bucket所在地域。
+  accessKeyId: OSS_ACCESS_KEY_ID, // 确保已设置环境变量OSS_ACCESS_KEY_ID。
+  accessKeySecret: OSS_ACCESS_KEY_SECRET, // 确保已设置环境变量OSS_ACCESS_KEY_SECRET。
+  bucket: 'duanjutv2', // 示例：'my-bucket-name'，填写存储空间名称。
+});
+
+export async function uploadFile(name, file) {
+  try {
+    const uploadResult = await client.put(name, file);
+    // console.log('上传成功:', uploadResult);
+    return uploadResult;
+  } catch (error) {
+    throw new Error(error.message);
+    // console.error('发生错误:', error);
+  }
+}
