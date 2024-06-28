@@ -1,5 +1,6 @@
 import { sutando } from 'sutando';
 import VideoEpisode from './VideoEpisode.js';
+import Video from './Video.js';
 
 sutando.addConnection({
   client: 'mysql2',
@@ -14,4 +15,5 @@ sutando.addConnection({
 export {
   sutando,
   VideoEpisode,
+  Video,
 }

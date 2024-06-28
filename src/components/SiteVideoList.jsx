@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTasksStore } from "@/store/global";
 import { Page } from "./Page";
+import { toast } from "sonner";
 
 export default function SiteVideoList({ data }) {
   const { addTemporaryVideo } = useTasksStore(store => ({
@@ -21,6 +22,9 @@ export default function SiteVideoList({ data }) {
         ocr_vtt: null,
       }
     });
+    toast.success('添加成功', {
+      description: `${video.id} 已添加到队列`
+    });
   }
 
   return <div className="mt-4 rounded-xl border border-dashed border-cyan-300 p-4">
@@ -28,18 +32,22 @@ export default function SiteVideoList({ data }) {
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
+          <TableHead className="w-[300px]">剧集</TableHead>
           <TableHead className="w-[300px]">视频名称</TableHead>
           <TableHead>插图</TableHead>
           {/* <TableHead>视频文件</TableHead> */}
+          <TableHead>已上传字幕</TableHead>
           <TableHead className="text-right">操作</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="text-sm">
         {data.data.map((video, index) => (<TableRow key={video.id}>
           <TableCell className="font-medium text-sm">{video.id}</TableCell>
+          <TableCell className="font-medium text-sm">{video.videox.title}</TableCell>
           <TableCell className="font-medium text-sm">{video.name}</TableCell>
           <TableCell><img className="w-12" src={video.image} /></TableCell>
           {/* <TableCell>{video.video}</TableCell> */}
+          <TableCell>{video.subtitles ? '是' : '否'}</TableCell>
           <TableCell className="text-right space-x-2">
             <Button variant="secondary" onClick={() => handleAddVideo(video)}>添加到队列</Button>
           </TableCell>

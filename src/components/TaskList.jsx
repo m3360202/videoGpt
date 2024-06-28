@@ -52,12 +52,12 @@ export default function TaskList() {
         {tasks.length === 0 && <TableRow>
           <TableCell colSpan="15"><div className="w-full my-16 text-center">没有历史任务</div></TableCell>
         </TableRow>}
-        {tasks.reverse().map((task, index) => {
+        {[...tasks].reverse().map((task, index) => {
           return <Fragment key={task.id}>
             <TableRow key={task.id}>
               <TableCell className="font-medium text-sm">{task.id}</TableCell>
               <TableCell className="text-sm">{task.videos.length}</TableCell>
-              <TableCell className="text-sm">{Number(task.progress.toFixed(2))}%</TableCell>
+              <TableCell className="text-sm">{Number(task?.progress?.toFixed(2) || 0)}%</TableCell>
               <TableCell className="text-sm">{renderStatusText(task.status)}</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

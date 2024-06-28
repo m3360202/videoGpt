@@ -7,6 +7,7 @@ import { useTasksStore } from "@/store/global";
 import { postOcrTask } from "@/app/actions";
 import { useState } from "react";
 import { LoaderCircleIcon } from "lucide-react";
+import { toast } from "sonner";
 
 export default function VideoList() {
   const { addTask, removeTemporaryVideo, temporary_videos, resetTemporaryVideos } = useTasksStore();
@@ -14,6 +15,7 @@ export default function VideoList() {
 
   const handleStartTask = async () => {
     if (temporary_videos.length === 0) {
+      toast.error('队列中还没有添加视频');
       return;
     }
 
@@ -53,6 +55,7 @@ export default function VideoList() {
       <Table className="">
         <TableHeader>
           <TableRow>
+            <TableHead>ID</TableHead>
             <TableHead className="w-[300px]">视频名称</TableHead>
             <TableHead>插图</TableHead>
             <TableHead className="text-right">操作</TableHead>
@@ -63,6 +66,7 @@ export default function VideoList() {
             <TableCell colSpan="5"><div className="w-full my-16 text-center">队列中还没有添加视频</div></TableCell>
           </TableRow>}
           {temporary_videos.map((video, index) => (<TableRow key={video.id}>
+            <TableCell className="font-medium text-sm">{video.id}</TableCell>
             <TableCell className="font-medium text-sm">{video.name}</TableCell>
             <TableCell><img className="w-12" src={video.url} /></TableCell>
             <TableCell className="text-right space-x-2">
