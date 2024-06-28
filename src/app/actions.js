@@ -5,8 +5,56 @@ import { stringifyVTT, uploadFile } from "@/lib/utils";
 import { VideoEpisode } from "@/sutando";
 import axios from "axios";
 
-export async function postOcrTask(tasks) {
-  return await execOcrTask(tasks);
+export async function postOcrTask(tasks, region) {
+  return await Promise.all([execOcrTask(tasks, [
+    {
+      "type": "trans_only_ocr",
+      "start": 0.5,
+      "end": 99999,
+      "region": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          region / 100
+        ],
+        [
+          0,
+          region / 100
+        ]
+      ]
+    }
+  ]), execOcrTask(tasks, [
+    {
+      "type": "trans_only_ocr",
+      "start": 0.5,
+      "end": 99999,
+      "region": [
+        [
+          0,
+          region / 100
+        ],
+        [
+          1,
+          region / 100
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  ])]);
 }
 
 export async function getTaskStatus(taskId) {

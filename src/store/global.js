@@ -3,8 +3,10 @@ import { persist } from 'zustand/middleware';
 
 export const useTasksStore = create(
   persist((set) => ({
+    ocrRegion: 66,
     temporary_videos: [],
     tasks: [],
+    setOcrRegion: (ocrRegion) => set((state) => ({ ocrRegion })),
     addTemporaryVideo: (video) => set((state) => {
       if (state.temporary_videos.length >= 20) {
         alert('每个队列最多只能添加20个视频');
@@ -35,15 +37,30 @@ export const useTasksStore = create(
       };
     }),
     setVideoVisible: (id, visible) => set((state) => ({ tasks: state.tasks.map((t) => (t.id === id ? { ...t, video_visible: visible } : t)) })),
-    updateProgress: (id, progresses) => set((state) => {
-      progresses.map(progress => {
+    updateProgress: (id, introduceProgresses, subtitleProgresses) => set((state) => {
+      introduceProgresses.map(progress => {
         state.tasks.map(task => {
           if (task.id === id) {
             task.videos.map(video => {
               if (video.video === progress.url) {
-                video.progress = progress.processProgress;
-                if (video.progress == 100) {
-                  video.data.ocr_url = progress.tgtSrtUrl;
+                video.introduce_progress = progress.processProgress;
+                if (video.introduce_progress == 100) {
+                  video.data.ocr_introduce_url = progress.tgtSrtUrl;
+                }
+              }
+            });
+          }
+        });
+      });
+
+      subtitleProgresses.map(progress => {
+        state.tasks.map(task => {
+          if (task.id === id) {
+            task.videos.map(video => {
+              if (video.video === progress.url) {
+                video.subtitle_progress = progress.processProgress;
+                if (video.subtitle_progress == 100) {
+                  video.data.ocr_subtitle_url = progress.tgtSrtUrl;
                 }
               }
             });
@@ -53,9 +70,10 @@ export const useTasksStore = create(
 
       state.tasks.map(task => {
         if (task.id === id) {
-          task.progress = progresses.reduce((a, b) => a + b.processProgress, 0) / progresses.length;
+          task.progress = task.videos.reduce((acc, cur) => acc + cur.subtitle_progress + cur.introduce_progress, 0) / task.videos.length / 2;
         }
       });
+      console.log('state.tasks', state.tasks);
         
       return {
         tasks: state.tasks

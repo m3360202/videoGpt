@@ -11,12 +11,13 @@ export function my_md5(str) {
   return md5.update(str).digest('hex');
 }
 
-export async function execOcrTask(tasks) {
+export async function execOcrTask(tasks, region) {
   let body = JSON.stringify({
     "urls": tasks.map(task => task.video),
     "videoInpaintLang": "zh",
     "lang": "en",
     "needChineseOcclude": 14,
+    "videoInpaintMasks": region ? region : [],
   });
 
   let sign = my_md5(my_md5(body) + appSecret);

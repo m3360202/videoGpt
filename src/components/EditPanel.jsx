@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { convertSrtToVtt, convertTimeToSeconds, parseVTT, randomString } from "@/lib/utils";
+import { convertSrtToVtt, convertTimeToSeconds, getVideoMergedCues, mergeCues, parseVTT, randomString } from "@/lib/utils";
 import { useTasksStore, useBasicSettings } from "@/store/global";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,14 +36,15 @@ export function EditPanel({ task, file }) {
   // }, []);
 
   useEffect(() => {
-    if (file.data.ocr_url && !file.data.ocr_vtt) {
-      fetch(file.data.ocr_url)
-        .then(res => res.text())
-        .then(res => {
-          file.data.ocr_vtt = parseVTT(convertSrtToVtt(res));
-          updateTaskVTT(task.id, file.id, 'ocr_vtt', file.data.ocr_vtt);
-          updateVideoVTT();
-        });
+    if (file.data.ocr_introduce_url && file.data.ocr_subtitle_url && !file.data.ocr_vtt) {
+      async function main() {
+        console.log('', [file.data.ocr_introduce_url, file.data.ocr_subtitle_url])
+        file.data.ocr_vtt = await getVideoMergedCues([file.data.ocr_introduce_url, file.data.ocr_subtitle_url]);
+        console.log('file.data.ocr_vtt', file.data.ocr_vtt)
+        // updateTaskVTT(task.id, file.id, 'ocr_vtt', file.data.ocr_vtt);
+        // updateVideoVTT();
+      }
+      main();
     }
   }, []);
 

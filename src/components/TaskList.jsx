@@ -52,19 +52,21 @@ export default function TaskList() {
         {tasks.length === 0 && <TableRow>
           <TableCell colSpan="15"><div className="w-full my-16 text-center">没有历史任务</div></TableCell>
         </TableRow>}
-        {tasks.reverse().map((task, index) => {
+        {[...tasks].reverse().map((task, index) => {
           return <Fragment key={task.id}>
             <TableRow key={task.id}>
               <TableCell className="font-medium text-sm">{task.id}</TableCell>
               <TableCell className="text-sm">{task.videos.length}</TableCell>
-              <TableCell className="text-sm">{Number(task.progress.toFixed(2))}%</TableCell>
+              <TableCell className="text-sm">{Number(task?.progress?.toFixed(2) || 0)}%</TableCell>
               <TableCell className="text-sm">{renderStatusText(task.status)}</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell className="text-right space-x-2">
                 <Button variant="secondary" onClick={async () => {
-                  const a = await getTaskStatus(task.ocr_id);
-                  updateProgress(task.id, a.body.content);
+                  console.log(task)
+                  const result = await Promise.all([getTaskStatus(task.ocr_introduce_id), getTaskStatus(task.ocr_subtitle_id)]);
+                  console.log(result);
+                  updateProgress(task.id, result[0].body.content, result[1].body.content);
                 }}>刷新进度</Button>
                 <Button variant="secondary" onClick={() => setVideoVisible(task.id, !task.video_visible)}>
                   {task.video_visible ? '收缩' : '展开'}
@@ -78,7 +80,7 @@ export default function TaskList() {
             {task.video_visible && task.videos.map(video => <TableRow key={`${task.id}-${video.id}`}>
               <TableCell className="text-sm">{video.id}</TableCell>
               <TableCell className="text-sm"></TableCell>
-              <TableCell className="text-sm">{video.progress || 0}%</TableCell>
+              <TableCell className="text-sm">{(video.introduce_progress + video.subtitle_progress) / 2 || 0}%</TableCell>
               <TableCell className="text-sm"></TableCell>
               <TableCell className="text-sm">{video.name}</TableCell>
               <TableCell><img className="w-8" src={video.url} /></TableCell>
@@ -86,7 +88,7 @@ export default function TaskList() {
                 <PublishVTTButton task={task} video={video} />
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button className="text-xs" variant="secondary" disabled={video.progress < 100}>编辑</Button>
+                    <Button className="text-xs" variant="secondary" disabled={((video.introduce_progress + video.subtitle_progress) / 2) < 100}>编辑</Button>
                   </SheetTrigger>
                   <SheetContent className="w-4/5 flex flex-col">
                     <SheetHeader>

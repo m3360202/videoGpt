@@ -16,7 +16,15 @@ export function randomString(len = 16) {
   return result
 }
 
-export function parseVTT(vttText) {
+export async function getVideoMergedCues(vtt_urls) {
+  const res1 = await fetch(vtt_urls[0]).then(res => res.text());
+  const ocr_introduce_vtt = parseVTT(convertSrtToVtt(res1), (text) => `(ps: ${text})`);
+  const res2 = await fetch(vtt_urls[1]).then(res => res.text());
+  const ocr_subtitle_vtt = parseVTT(convertSrtToVtt(res2));
+  return mergeCues(ocr_introduce_vtt, ocr_subtitle_vtt);
+}
+
+export function parseVTT(vttText, callback) {
   const lines = vttText.split('\n');
   const cues = [];
   let currentTime, currentText;
@@ -42,7 +50,7 @@ export function parseVTT(vttText) {
     else if (line.length === 0 && currentTime && currentText) {
       cues.push({
         time: currentTime,
-        text: currentText
+        text: callback ? callback(currentText) : currentText
       });
       currentTime = null;
       currentText = null;

@@ -20,8 +20,10 @@ export default function PublishVTTButton({ task, video }) {
     try {
       let ocr_vtt = video.data.ocr_vtt;
       if (!ocr_vtt) {
-        const res = await fetch(video.data.ocr_url).then(res => res.text());
-        ocr_vtt = parseVTT(convertSrtToVtt(res));
+        ocr_vtt = await getVideoMergedCues([
+          video.data.ocr_introduce_url,
+          video.data.ocr_subtitle_url,
+        ]);
         updateTaskVTT(task.id, video.id, 'ocr_vtt', ocr_vtt);
       }
 
