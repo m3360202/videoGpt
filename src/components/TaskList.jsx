@@ -33,7 +33,6 @@ export default function TaskList() {
       return '出错';
     }
   }
-
   return <div className="mt-4 rounded-xl border border-dashed border-cyan-300 p-4">
     <Table className="">
       {/* <TableCaption>任务信息</TableCaption> */}
@@ -69,7 +68,7 @@ export default function TaskList() {
                   updateProgress(task.id, result[0].body.content, result[1].body.content);
                 }}>刷新进度</Button>
                 <Button variant="secondary" onClick={() => setVideoVisible(task.id, !task.video_visible)}>
-                  {task.video_visible ? '收缩' : '展开'}
+                  {task.video_visible ? '收起' : '转译详情'}
                 </Button>
                 <PublishAllButton task={task} />
                 <Button variant="secondary" onClick={() => {

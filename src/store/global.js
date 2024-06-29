@@ -42,7 +42,7 @@ export const useTasksStore = create(
         state.tasks.map(task => {
           if (task.id === id) {
             task.videos.map(video => {
-              if (video.video === progress.url) {
+              if (video.video.trim() === progress.url.trim()) {
                 video.introduce_progress = progress.processProgress;
                 if (video.introduce_progress == 100) {
                   video.data.ocr_introduce_url = progress.tgtSrtUrl;
@@ -57,7 +57,7 @@ export const useTasksStore = create(
         state.tasks.map(task => {
           if (task.id === id) {
             task.videos.map(video => {
-              if (video.video === progress.url) {
+              if (video.video.trim() === progress.url.trim()) {
                 video.subtitle_progress = progress.processProgress;
                 if (video.subtitle_progress == 100) {
                   video.data.ocr_subtitle_url = progress.tgtSrtUrl;

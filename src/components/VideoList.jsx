@@ -82,7 +82,7 @@ export default function VideoList() {
             <TableCell className="font-medium text-sm">{video.name}</TableCell>
             <TableCell><img className="w-12" src={video.url} /></TableCell>
             <TableCell className="text-right space-x-2">
-              <Button variant="secondary" onClick={() => {
+              <Button variant="secondary" className="bg-red-500 text-white hover:bg-red-300" onClick={() => {
                 handleRemoveVideo(video);
               }}>移出队列</Button>
             </TableCell>

@@ -7,9 +7,11 @@ import { Page } from "./Page";
 import { toast } from "sonner";
 
 export default function SiteVideoList({ data }) {
-  const { addTemporaryVideo } = useTasksStore(store => ({
-    addTemporaryVideo: store.addTemporaryVideo
+  const { temporary_videos, addTemporaryVideo } = useTasksStore(store => ({
+    addTemporaryVideo: store.addTemporaryVideo,
+    temporary_videos: store.temporary_videos
   }));
+
 
   const handleAddVideo = (video) => {
     addTemporaryVideo({
@@ -43,13 +45,17 @@ export default function SiteVideoList({ data }) {
       <TableBody className="text-sm">
         {data.data.map((video, index) => (<TableRow key={video.id}>
           <TableCell className="font-medium text-sm">{video.id}</TableCell>
-          <TableCell className="font-medium text-sm">{video.videox.title}</TableCell>
+          <TableCell className="font-medium text-sm">{video?.videox?.title}</TableCell>
           <TableCell className="font-medium text-sm">{video.name}</TableCell>
           <TableCell><img className="w-12" src={video.image} /></TableCell>
           {/* <TableCell>{video.video}</TableCell> */}
           <TableCell>{video.subtitles ? '是' : '否'}</TableCell>
           <TableCell className="text-right space-x-2">
-            <Button variant="secondary" onClick={() => handleAddVideo(video)}>添加到队列</Button>
+            {temporary_videos.length > 0 && temporary_videos.find((item) => item.id === video.id) ? (
+              <Button variant="secondary" className="bg-green-500 text-white hover:bg-green-300" >已添加</Button>
+            ) : (
+              <Button variant="secondary" onClick={() => handleAddVideo(video)}>添加到队列</Button>
+            )}
           </TableCell>
         </TableRow>))}
       </TableBody>
