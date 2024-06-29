@@ -1,27 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { convertSrtToVtt, convertTimeToSeconds, getVideoMergedCues, mergeCues, parseVTT, randomString } from "@/lib/utils";
-import { useTasksStore, useBasicSettings } from "@/store/global";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { convertTimeToSeconds, getVideoMergedCues } from "@/lib/utils";
+import { useTasksStore } from "@/store/global";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { TrashIcon, ClockIcon, HashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -95,7 +76,29 @@ export function EditPanel({ task, file }) {
       track.addCue(vttCue);
     });
   }
+  useEffect(() => {
+    const video = videoRef.current;
 
+    // 显示控件
+    const showControls = () => {
+      if (video) {
+        video.controls = true;
+      }
+    };
+
+    // 初始化时显示控件
+    showControls();
+
+    // 添加事件监听器来处理鼠标事件
+    video.addEventListener('mouseover', showControls);
+    video.addEventListener('mouseout', showControls); // 我们在这里也调用showControls来确保控件一直显示
+
+    // 清理事件监听器
+    return () => {
+      video.removeEventListener('mouseover', showControls);
+      video.removeEventListener('mouseout', showControls);
+    };
+  }, []);
   return (
     <div className="flex-1 my-6 p-8 w-full rounded-xl bg-gradient-to-r from-cyan-300 to-fuchsia-300 grid grid-cols-2 gap-8 relative">
       <div className="p-6 bg-white rounded-lg flex flex-col items-center flex-1 overflow-y-auto h-[calc(100vh-280px)] ">
