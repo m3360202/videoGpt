@@ -92,7 +92,9 @@ export function stringifyVTT(cues) {
 
   for (let i = 0; i < cues.length; i++) {
     const cue = cues[i];
-    vttText += cue.time.start + ' --> ' + cue.time.end + '\n' + cue.text + '\n\n';
+    vttText += cue.time.start + ' --> ' + cue.time.end;
+    vttText += cue.text.startsWith('(ps') ? ' line:70%' : ' line:85%';
+    vttText += '\n' + cue.text + '\n\n';
   }
 
   return vttText;
