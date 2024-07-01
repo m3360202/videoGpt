@@ -49,7 +49,11 @@ export default function SiteVideoList({ data }) {
           <TableCell className="font-medium text-sm">{video.name}</TableCell>
           <TableCell><img className="w-12" src={video.image} /></TableCell>
           {/* <TableCell>{video.video}</TableCell> */}
-          <TableCell>{video.subtitles ? '是' : '否'}</TableCell>
+          <TableCell>{video.subtitles ? (
+            <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">已上传</span>
+          ) : (
+            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">未上传</span>
+          )}</TableCell>
           <TableCell className="text-right space-x-2">
             {temporary_videos.length > 0 && temporary_videos.find((item) => item.id === video.id) ? (
               <Button variant="secondary" className="bg-green-500 text-white hover:bg-green-300" >已添加</Button>
