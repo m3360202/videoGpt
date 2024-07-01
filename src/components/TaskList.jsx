@@ -15,13 +15,13 @@ import {
 } from "@/components/ui/sheet";
 import { EditPanel } from "@/components/EditPanel";
 import { getTaskStatus } from "@/app/actions";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import PublishVTTButton from "./PublishVTTButton";
 import PublishAllButton from "./PublishAllButton";
 
 export default function TaskList() {
   const { tasks, updateProgress, removeTask, setVideoVisible } = useTasksStore();
-
+  let interval;
   const renderStatusText = (status) => {
     if (status === 0) {
       return '未开始';
@@ -33,6 +33,29 @@ export default function TaskList() {
       return '出错';
     }
   }
+
+  useEffect(() => {
+    if (tasks && tasks.length > 0 && !tasks.every(task => task.progress === 100)) {
+      interval = setInterval(() => {
+        tasks.forEach(async (task, index) => {
+          if (task.progress !== 100) {
+            const result = await Promise.all([getTaskStatus(task.ocr_introduce_id), getTaskStatus(task.ocr_subtitle_id)])
+            // console.log('interval check process', index, result)
+            updateProgress(task.id, result[0].body.content, result[1].body.content)
+          }
+        })
+        if (tasks.every(task => task.progress === 100)) {
+          clearInterval(interval)
+        }
+      }, 10000)
+    }
+
+    return () => clearInterval(interval)
+
+  }, [tasks])
+
+
+
   return <div className="mt-4 rounded-xl border border-dashed border-cyan-300 p-4">
     <Table className="">
       {/* <TableCaption>任务信息</TableCaption> */}
@@ -79,7 +102,7 @@ export default function TaskList() {
             {task.video_visible && task.videos.map(video => <TableRow key={`${task.id}-${video.id}`}>
               <TableCell className="text-sm">{video.id}</TableCell>
               <TableCell className="text-sm"></TableCell>
-              <TableCell className="text-sm">{(video.introduce_progress + video.subtitle_progress) / 2 || 0}%</TableCell>
+              <TableCell className="text-sm text-green-500">{(video.introduce_progress + video.subtitle_progress) / 2 || 0}%</TableCell>
               <TableCell className="text-sm"></TableCell>
               <TableCell className="text-sm">{video.name}</TableCell>
               <TableCell><img className="w-8" src={video.url} /></TableCell>
