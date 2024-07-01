@@ -44,7 +44,14 @@ export function parseVTT(vttText, callback) {
     }
     // Check for cue text
     else if (currentTime && line.length > 0) {
-      currentText = currentText ? currentText + '\n' + line : line;
+      // 如果一行出现12个连续数字(备案号)，跳过
+      if (containsEightConsecutiveDigits(line)) {
+        continue;
+      }
+
+      // 如果字数太长，换行
+      const newLine = insertLineBreaks(line, 120);
+      currentText = currentText ? currentText + '\n' + newLine : newLine;
     }
     // Check for empty line
     else if (line.length === 0 && currentTime && currentText) {
@@ -58,6 +65,20 @@ export function parseVTT(vttText, callback) {
   }
 
   return cues;
+}
+
+function insertLineBreaks(text, maxLineLength) {
+  let result = '';
+  while (text.length > maxLineLength) {
+      let index = text.lastIndexOf(' ', maxLineLength);
+      if (index === -1) {
+          index = maxLineLength;
+      }
+      result += text.substring(0, index) + '\n';
+      text = text.substring(index).trim();
+  }
+  result += text;
+  return result;
 }
 
 export function mergeCues(cues1, cues2) {
@@ -93,11 +114,16 @@ export function stringifyVTT(cues) {
   for (let i = 0; i < cues.length; i++) {
     const cue = cues[i];
     vttText += cue.time.start + ' --> ' + cue.time.end;
-    vttText += cue.text.startsWith('(ps') ? ' line:70%' : ' line:85%';
+    vttText += cue.text.startsWith('(ps') ? ' line:70%' : ' line:80%';
     vttText += '\n' + cue.text + '\n\n';
   }
 
   return vttText;
+}
+
+export function containsEightConsecutiveDigits(str) {
+  const regex = /\d{12}/;
+  return regex.test(str);
 }
 
 export function downloadVTT(vttText, filename) {
