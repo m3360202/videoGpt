@@ -77,28 +77,19 @@ export function EditPanel({ task, file }) {
     });
   }
   useEffect(() => {
-    const video = videoRef.current;
-
-    // 显示控件
-    const showControls = () => {
+    const video = videoRef.current
+    let interval = setInterval(() => {
       if (video) {
-        video.controls = true;
+        video.controls = true
       }
-    };
-
-    // 初始化时显示控件
-    showControls();
-
-    // 添加事件监听器来处理鼠标事件
-    video.addEventListener('mouseover', showControls);
-    video.addEventListener('mouseout', showControls); // 我们在这里也调用showControls来确保控件一直显示
-
-    // 清理事件监听器
-    return () => {
-      video.removeEventListener('mouseover', showControls);
-      video.removeEventListener('mouseout', showControls);
-    };
-  }, []);
+    },100)
+    return (
+      () => {
+        clearInterval(interval)
+      }
+    )
+  }, [])
+  
   return (
     <div className="flex-1 my-6 p-8 w-full rounded-xl bg-gradient-to-r from-cyan-300 to-fuchsia-300 grid grid-cols-2 gap-8 relative">
       <div className="p-6 bg-white rounded-lg flex flex-col items-center flex-1 overflow-y-auto h-[calc(100vh-280px)] ">
