@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { LoaderCircleIcon } from "lucide-react";
 import { publishVTT } from "@/app/actions";
 import { toast } from "sonner";
-import { convertSrtToVtt, parseVTT } from "@/lib/utils";
+import { convertSrtToVtt, getVideoMergedCues, parseVTT } from "@/lib/utils";
 import { useTasksStore } from "@/store/global";
 
 export default function PublishVTTButton({ task, video }) {
