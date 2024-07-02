@@ -50,6 +50,7 @@ export function parseVTT(vttText, callback) {
       }
 
       // 如果字数太长，换行
+      console.log('insertLineBreaks', 30);
       const newLine = insertLineBreaks(line, 30);
       currentText = currentText ? currentText + '\n' + newLine : newLine;
     }
