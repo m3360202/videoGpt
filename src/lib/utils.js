@@ -50,7 +50,7 @@ export function parseVTT(vttText, callback) {
       }
 
       // 如果字数太长，换行
-      const newLine = insertLineBreaks(line, 32);
+      const newLine = insertLineBreaks(line, 120);
       currentText = currentText ? currentText + '\n' + newLine : newLine;
     }
     // Check for empty line
