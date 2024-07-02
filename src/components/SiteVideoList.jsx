@@ -34,21 +34,21 @@ export default function SiteVideoList({ data }) {
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
+          <TableHead>视频Id</TableHead>
           <TableHead className="w-[300px]">剧集</TableHead>
           <TableHead className="w-[300px]">视频名称</TableHead>
           <TableHead>插图</TableHead>
-          {/* <TableHead>视频文件</TableHead> */}
           <TableHead>已上传字幕</TableHead>
           <TableHead className="text-right">操作</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="text-sm">
         {data.data.map((video, index) => (<TableRow key={video.id}>
-          <TableCell className="font-medium text-sm">{video.id}</TableCell>
+          <TableCell>{video.vid}</TableCell>
+          <TableCell className="font-medium text-sm">{`${video.vid}-${index}`}</TableCell>
           <TableCell className="font-medium text-sm">{video?.videox?.title}</TableCell>
           <TableCell className="font-medium text-sm">{video.name}</TableCell>
           <TableCell><img className="w-12" src={video.image} /></TableCell>
-          {/* <TableCell>{video.vid}</TableCell> */}
           <TableCell>{video.subtitles ? (
             <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">已上传</span>
           ) : (

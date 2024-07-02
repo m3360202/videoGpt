@@ -3305,6 +3305,7 @@ streamsearch@^1.1.0:
   integrity sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -3439,10 +3440,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-sutando@^1.5.3:
-  version "1.5.3"
-  resolved "https://registry.npmjs.org/sutando/-/sutando-1.5.3.tgz#b0968f9044921b0cd0b66f415ce479440afaf9b3"
-  integrity sha512-O8mvUncShA129YjgzeH6hEItNjIuPrsLYV+0hhH8JWvR3M1br5aPAmYK2r25MA/AVmT8Fqex3It4KLP0PtSUkA==
+sutando@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.npmjs.org/sutando/-/sutando-1.5.4.tgz#0bf7570f379bf1afaeef60cb1e4e5461488f8e53"
+  integrity sha512-K2pgkuTtpkZSLb6melGiloBDn6p8g97rEcOb0MvxpLp8wHFkG1AhB4tLvXz4wJbiAZJxH6Fhl2LP75FcDukBCQ==
   dependencies:
     collect.js "^4.34.3"
     colorette "^2.0.20"
