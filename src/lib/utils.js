@@ -56,6 +56,10 @@ export function parseVTT(vttText, callback) {
     }
     // Check for empty line
     else if (line.length === 0 && currentTime && currentText) {
+      if (secondsDifference(currentTime.start, currentTime.end) < 400) {
+        continue;
+      }
+
       cues.push({
         time: currentTime,
         text: callback ? callback(currentText) : currentText
@@ -66,6 +70,21 @@ export function parseVTT(vttText, callback) {
   }
 
   return cues;
+}
+
+export function secondsDifference(time1, time2) {
+  // 将时间戳转换为数组 [小时, 分钟, 秒, 毫秒]
+  let [hours1, minutes1, seconds1] = time1.split(':').map(Number);
+  let [hours2, minutes2, seconds2] = time2.split(':').map(Number);
+
+  // 将时间转换为毫秒
+  let time1InMilliseconds = ((hours1 * 60 * 60) + (minutes1 * 60) + seconds1) * 1000;
+  let time2InMilliseconds = ((hours2 * 60 * 60) + (minutes2 * 60) + seconds2) * 1000;
+
+  // 计算差值
+  let difference = Math.abs(time1InMilliseconds - time2InMilliseconds);
+
+  return difference;
 }
 
 function insertLineBreaks(text, maxLineLength) {
