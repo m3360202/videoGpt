@@ -1,6 +1,6 @@
 "use client";
 
-import { convertTimeToSeconds, getVideoMergedCues } from "@/lib/utils";
+import { cn, convertTimeToSeconds, getVideoMergedCues, secondsDifference } from "@/lib/utils";
 import { useTasksStore } from "@/store/global";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { TrashIcon, ClockIcon, HashIcon } from "lucide-react";
@@ -170,13 +170,16 @@ export function EditPanel({ task, file }) {
                     <div className="flex w-3 justify-center text-xs">
                       <HashIcon className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 truncate">{index + 1}</div>
+                    <div className="flex-1 truncate">{index + 1} ({secondsDifference(item.time.start, item.time.end) / 1000}秒)</div>
                   </div>
                 </div>
                 <div className="relative flex h-full flex-1 flex-col subtitle-mode-2">
                   <div className="el-textarea text1 flex-1">
                     <textarea
-                      className="min-h-[31px] resize-none size-full p-2 text-xs hover:border-none focus:border-none focus:outline-none"
+                      className={cn(
+                        "min-h-[31px] resize-none size-full p-2 text-xs hover:border-none focus:border-none focus:outline-none",
+                        secondsDifference(item.time.start, item.time.end) < 800 ? ' text-red-500' : ''
+                      )}
                       rows="2"
                       maxLength="200"
                       tabIndex="0"
