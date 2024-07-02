@@ -44,7 +44,7 @@ export default function SiteVideoList({ data }) {
       </TableHeader>
       <TableBody className="text-sm">
         {data.data.map((video, index) => (<TableRow key={video.id}>
-          <TableCell className="font-medium text-sm">{`${video.vid}-${index}`}</TableCell>
+          <TableCell className="font-medium text-sm">{`${video.vid}-${video.name}`}</TableCell>
           <TableCell className="font-medium text-sm">{video?.videox?.title}</TableCell>
           <TableCell className="font-medium text-sm">{video.name}</TableCell>
           <TableCell><img className="w-12" src={video.image} /></TableCell>
