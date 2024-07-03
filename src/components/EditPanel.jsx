@@ -22,7 +22,7 @@ export function EditPanel({ task, file }) {
         console.log('', [file.data.ocr_introduce_url, file.data.ocr_subtitle_url])
         file.data.ocr_vtt = await getVideoMergedCues([file.data.ocr_introduce_url, file.data.ocr_subtitle_url]);
         console.log('file.data.ocr_vtt', file.data.ocr_vtt)
-        // updateTaskVTT(task.id, file.id, 'ocr_vtt', file.data.ocr_vtt);
+        updateTaskVTT(task.id, file.id, 'ocr_vtt', file.data.ocr_vtt);
         // updateVideoVTT();
       }
       main();

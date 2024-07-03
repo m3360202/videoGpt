@@ -6,7 +6,7 @@ export default async function Home({ searchParams }) {
   const page = Number(searchParams.page) || 1;
   const limit = Number(searchParams.limit) || 15;
   const videos = await VideoEpisode.query().with('videox').paginate(page, limit);
-
+  console.log('version:20240703')
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
       <header className="w-full border-b border-b-slate-200">
