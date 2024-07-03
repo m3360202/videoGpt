@@ -48,15 +48,15 @@ export function parseVTT(vttText, callback) {
       if (containsEightConsecutiveDigits(line)) {
         continue;
       }
-
       // 如果字数太长，换行
-      console.log('insertLineBreaks', 30);
       const newLine = insertLineBreaks(line, 30);
       currentText = currentText ? currentText + '\n' + newLine : newLine;
     }
     // Check for empty line
     else if (line.length === 0 && currentTime && currentText) {
       if (secondsDifference(currentTime.start, currentTime.end) < 400) {
+        currentTime = null;
+        currentText = null;
         continue;
       }
 
@@ -172,7 +172,6 @@ export function convertSrtToVtt(srtContent) {
 
   // 将时间戳中的","替换为"."
   vttContent = vttContent.replace(/(\d\d:\d\d:\d\d),(\d\d\d)/g, '\$1.\$2');
-
   // 返回VTT内容
   return vttContent;
 }
