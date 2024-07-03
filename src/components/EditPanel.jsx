@@ -11,7 +11,7 @@ export function EditPanel({ task, file }) {
   const { updateTaskVTT } = useTasksStore();
   const [tab, setTab] = useState('ocr');
   const [metadataLoaded, setMetadataLoaded] = useState(false);
-
+  const title = task.videos[0].name
   // useEffect(() => {
   //   updateVideoVTT('start');
   // }, []);
@@ -199,7 +199,7 @@ export function EditPanel({ task, file }) {
       </div>
       <div className="p-6 bg-white rounded-lg space-y-3">
         <div className="size-full flex flex-col">
-          <div className="mb-1">效果预览</div>
+          <div className="mb-1">效果预览 - {title}</div>
           <video ref={videoRef} className="w-[300px] h-[calc(100vh-345px)]" controls onLoadedMetadata={handleMetadataLoad}>
             <source src={file.video} type="video/mp4" />
             <track default kind="captions" src={''} srcLang="zh-CN" label="Chinese" />

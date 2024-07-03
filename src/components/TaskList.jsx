@@ -91,7 +91,7 @@ export default function TaskList() {
                   updateProgress(task.id, result[0].body.content, result[1].body.content);
                 }}>刷新进度</Button>
                 <Button variant="secondary" onClick={() => setVideoVisible(task.id, !task.video_visible)}>
-                  {task.video_visible ? '收起' : '转译详情'}
+                  {task.video_visible ? '收起' : '转译详情-展开'}
                 </Button>
                 <PublishAllButton task={task} />
                 <Button variant="secondary" onClick={() => {
