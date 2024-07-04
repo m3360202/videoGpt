@@ -23,7 +23,7 @@ export default async function Home({ searchParams }) {
         <MainPanel data={videos.toData()} />
       </div>
       <footer className="max-w-screen-xl mx-auto flex flex-row items-center justify-center py-4 mt-4">
-        Coded by <a href="#" className="ml-2 underline">Viewjoy</a>
+        Coded by <a href="https://viewjoy.tv/" className="ml-2 underline">Viewjoy</a>
       </footer>
     </main>
   );
