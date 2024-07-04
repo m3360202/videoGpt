@@ -14,7 +14,7 @@ export default async function Home({ searchParams }) {
           <h1 className="text-2xl font-bold">Video GPT</h1>
           <div className="flex flex-row items-center space-x-2">
             <Button asChild>
-              <a href="https://hypergpt.aliensoft.com.cn/" target="_blank">Hyper GPT</a>
+              <a href="https://hypergpt.aliensoft.com.cn/" target="_blank">HyperGPT</a>
             </Button>
           </div>
         </div>
@@ -23,7 +23,7 @@ export default async function Home({ searchParams }) {
         <MainPanel data={videos.toData()} />
       </div>
       <footer className="max-w-screen-xl mx-auto flex flex-row items-center justify-center py-4 mt-4">
-        Coded by <a href="#" className="ml-2 underline">重庆爱望科技有限公司</a>
+        Coded by <a href="#" className="ml-2 underline">Viewjoy</a>
       </footer>
     </main>
   );
