@@ -20,7 +20,7 @@ import PublishVTTButton from "./PublishVTTButton";
 import PublishAllButton from "./PublishAllButton";
 
 export default function TaskList() {
-  const { tasks, updateProgress, removeTask, setVideoVisible } = useTasksStore();
+  const { tasks, updateProgress, removeTask, setVideoVisible, updateTaskVTT } = useTasksStore();
   let interval;
   const renderStatusText = (status) => {
     if (status === 0) {
@@ -127,6 +127,9 @@ export default function TaskList() {
                     </SheetFooter>
                   </SheetContent>
                 </Sheet>
+                {/* <Button className="text-xs" variant="secondary" onClick={() => {
+                  updateTaskVTT(task.id, video.id, 'ocr_vtt', null)
+                }}>删除本地字幕</Button> */}
               </TableCell>
             </TableRow>)}
           </Fragment>;

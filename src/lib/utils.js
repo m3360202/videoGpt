@@ -18,10 +18,30 @@ export function randomString(len = 16) {
 
 export async function getVideoMergedCues(vtt_urls) {
   const res1 = await fetch(vtt_urls[0]).then(res => res.text());
-  const ocr_introduce_vtt = parseVTT(convertSrtToVtt(res1), (text) => `(ps: ${text})`);
+  const ocr_introduce_vtt = parseVTT(convertSrtToVtt(res1), (text, time) => {
+    if (secondsDifference(time.start, time.end) < 400) {
+      return false;
+    }
+
+    return `(ps: ${text})`
+  });
   const res2 = await fetch(vtt_urls[1]).then(res => res.text());
   const ocr_subtitle_vtt = parseVTT(convertSrtToVtt(res2));
-  return mergeCues(ocr_introduce_vtt, ocr_subtitle_vtt);
+  const mergedCues = mergeCues(ocr_introduce_vtt, ocr_subtitle_vtt);
+
+  if (mergedCues.length > 0) {
+    const lastCue = mergedCues[mergedCues.length - 1];
+    // 增加 to be continue...
+    mergedCues.push({
+      time: {
+        start: lastCue.time.end,
+        end: '99:59:59.999'
+      },
+      text: '(ps: to be continued)'
+    });
+  }
+
+  return mergedCues;
 }
 
 export function parseVTT(vttText, callback) {
@@ -54,7 +74,9 @@ export function parseVTT(vttText, callback) {
     }
     // Check for empty line
     else if (line.length === 0 && currentTime && currentText) {
-      if (secondsDifference(currentTime.start, currentTime.end) < 400) {
+      const text = callback ? callback(currentText, currentTime) : currentText;
+
+      if (text === false) {
         currentTime = null;
         currentText = null;
         continue;
@@ -62,7 +84,7 @@ export function parseVTT(vttText, callback) {
 
       cues.push({
         time: currentTime,
-        text: callback ? callback(currentText) : currentText
+        text: text
       });
       currentTime = null;
       currentText = null;
