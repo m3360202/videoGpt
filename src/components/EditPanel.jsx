@@ -22,7 +22,7 @@ export function EditPanel({ task, file }) {
         const ocr_vtt = await getVideoMergedCues([file.data.ocr_introduce_url, file.data.ocr_subtitle_url]);
         console.log('file.data.ocr_vtt', ocr_vtt)
         updateTaskVTT(task.id, file.id, 'ocr_vtt', ocr_vtt);
-        // updateVideoVTT();
+        updateVideoVTT();
       }
       main();
     }
@@ -30,7 +30,7 @@ export function EditPanel({ task, file }) {
 
   useEffect(() => {
     if (tab && metadataLoaded) {
-      updateVideoVTT('auto');
+      updateVideoVTT();
     }
   }, [tab, metadataLoaded]);
 
@@ -46,6 +46,13 @@ export function EditPanel({ task, file }) {
     updateVideoVTT();
   }
 
+  const handleUpdataTime = (index, key, value) => {
+    console.log(index, key, value)
+    file.data[`${tab}_vtt`][index].time[key] = value;
+    updateTaskVTT(task.id, file.id, `${tab}_vtt`, file.data[`${tab}_vtt`]);
+    updateVideoVTT();
+  }
+
   const handleTabChange = (tab) => {
     setTab(tab);
   }
@@ -55,25 +62,27 @@ export function EditPanel({ task, file }) {
   };
 
   const updateVideoVTT = () => {
-    if (!metadataLoaded) return;
-    const video = videoRef.current;
+    setTimeout(() => {
+      if (!metadataLoaded) return;
+      const video = videoRef.current;
 
-    // Clear existing tracks
-    const track = video.textTracks[0];
-    while (track?.cues?.length > 0) {
-      track.removeCue(track.cues[0]);
-    }
+      // Clear existing tracks
+      const track = video.textTracks[0];
+      while (track?.cues?.length > 0) {
+        track.removeCue(track.cues[0]);
+      }
 
-    // Add new cues
-    file?.data?.[`${tab}_vtt`]?.forEach(cue => {
-      const startSeconds = convertTimeToSeconds(cue.time.start);
-      const endSeconds = convertTimeToSeconds(cue.time.end);
-      const vttCue = new VTTCue(startSeconds, endSeconds, cue.text);
-      // vttCue.line = '-30%';
-      // vttCue.lineAlign = "start";
-      // vttCue.positionAlign = 'middle';
-      track.addCue(vttCue);
-    });
+      // Add new cues
+      file?.data?.[`${tab}_vtt`]?.forEach(cue => {
+        const startSeconds = convertTimeToSeconds(cue.time.start);
+        const endSeconds = convertTimeToSeconds(cue.time.end);
+        const vttCue = new VTTCue(startSeconds, endSeconds, cue.text);
+        // vttCue.line = '-30%';
+        // vttCue.lineAlign = "start";
+        // vttCue.positionAlign = 'middle';
+        track.addCue(vttCue);
+      });
+    }, 200);
   }
   useEffect(() => {
     const video = videoRef.current
@@ -146,9 +155,9 @@ export function EditPanel({ task, file }) {
           </TabsContent> */}
           <TabsContent value="ocr" className="flex-1 direction-vertical border divide-y">
             {!file.data.ocr_vtt && <div className="size-full flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             </div>}
             {file.data.ocr_vtt?.map((item, index) => <div className="relative h-20" key={index}>
@@ -158,18 +167,30 @@ export function EditPanel({ task, file }) {
                     <TrashIcon className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="hidden h-full w-[7.7rem] flex-col items-start justify-between border-r border-gray-200 p-2 text-[13px] text-black/70 lg:flex">
+                <div className="hidden h-full w-[7.7rem] flex-col items-start justify-between border-r border-gray-200 p-2 text-[13px] text-black/70 lg:flex gap-0.5">
                   <div className="flex w-full items-center gap-1">
                     <div className="flex w-3 justify-center text-xs">
                       <ClockIcon className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 truncate">{item.time.start}</div>
+                    <div className="flex-1 truncate">
+                      <input
+                        className="w-full px-1 py-0.5 rounded bg-slate-100 focus-visible:outline-none"
+                        value={item.time.start}
+                        onChange={(e) => handleUpdataTime(index, 'start', e.target.value)}
+                      />
+                    </div>
                   </div>
                   <div className="flex w-full items-center gap-1">
                     <div className="flex w-3 justify-center text-xs">
                       <ClockIcon className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 truncate">{item.time.end}</div>
+                    <div className="flex-1 truncate">
+                      <input
+                        className="w-full px-1 py-0.5 rounded bg-slate-100 focus-visible:outline-none"
+                        value={item.time.end}
+                        onChange={(e) => handleUpdataTime(index, 'end', e.target.value)}
+                      />
+                    </div>
                   </div>
                   <div className="flex w-full items-center gap-1">
                     <div className="flex w-3 justify-center text-xs">

@@ -218,3 +218,9 @@ export async function uploadFile(name, file) {
     // console.error('发生错误:', error);
   }
 }
+
+export function validateTimestamp(timestamp) {
+  // 正则表达式匹配 hh:mm:ss.sss 格式的时间戳
+  const regex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\.[0-9]{3}$/;
+  return regex.test(timestamp);
+}
